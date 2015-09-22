@@ -27,7 +27,7 @@ from SphinxNymserver import Nymserver
 try:
     from Crypto.Cipher import AES
     from Crypto.Hash import SHA256, HMAC
-    from Crypto.Util import number
+    from Crypto.Util import number, strxor
 except:
     print "\n\n*** You need to install the Python Cryptography Toolkit. ***\n\n"
     raise
@@ -116,7 +116,7 @@ class SphinxParams:
     def xor(self, str1, str2):
 	# XOR two strings
 	assert len(str1) == len(str2)
-	return HMAC._strxor(str1,str2)
+	return strxor.strxor(str1,str2)
 
     class xcounter:
 	# Implements a string counter to do AES-CTR mode
