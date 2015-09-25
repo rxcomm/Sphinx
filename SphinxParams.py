@@ -22,6 +22,7 @@
 # packet format by George Danezis".
 
 import os
+from curve25519 import keys
 from SphinxNymserver import Nymserver
 
 try:
@@ -74,13 +75,15 @@ class Group_ECC:
 
     def __init__(self):
 
-        self.g = basepoint()
+        self.g = b'\x00'*31+b'\x09'
 
     def gensecret(self):
-        return makesecret(os.urandom(32))
+        key = keys.Private()
+        return key.private
 
     def expon(self, base, exp):
-        return curvedh(exp, base)
+        key = keys.Private(secret=exp)
+        return key.get_shared_key(keys.Public(base), hashfunc=lambda x: x)
 
     def multiexpon(self, base, exps):
 	baseandexps = [base]
@@ -89,7 +92,8 @@ class Group_ECC:
 
     def makeexp(self, data):
         assert len(data) == 32
-        return makesecret(data)
+        key = keys.Private(secret=data)
+        return key.private
 
     def in_group(self, alpha):
 	# All strings of length 32 are in the group, says DJB
